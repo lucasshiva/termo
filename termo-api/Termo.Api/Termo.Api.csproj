@@ -5,4 +5,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
   </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="TestableIO.System.IO.Abstractions.Wrappers" Version="22.1.0" />
+  </ItemGroup>
 </Project>

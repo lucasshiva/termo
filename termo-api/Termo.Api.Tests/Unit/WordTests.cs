@@ -1,0 +1,31 @@
+using Shouldly;
+using Termo.Api.Models;
+
+namespace Termo.Api.Tests.Unit;
+
+public class WordTests
+{
+    [Test]
+    public void Constructor_WithValidStrings_NormalizesValueAndDisplayText()
+    {
+        var word = new Word("Fogao", "foGãO");
+        word.Value.ShouldBe("fogao");
+        word.DisplayText.ShouldBe("FOGÃO");
+    }
+
+    [Test]
+    public void Constructor_WithNullDisplayText_UsesValueAsDisplay()
+    {
+        var word = new Word("casal");
+        word.DisplayText.ShouldBe("CASAL");
+    }
+
+    [Test]
+    public void Constructor_WithEmptyValue_ThrowsException()
+    {
+        Assert.Throws<ArgumentException>(() =>
+        {
+            var _ = new Word("");
+        });
+    }
+}

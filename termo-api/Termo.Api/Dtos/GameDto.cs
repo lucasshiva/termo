@@ -1,6 +1,9 @@
+using Termo.Api.Models;
+
 namespace Termo.Api.Dtos;
 
 public record GameDto
 {
-    public Guid Id { get; init; }
+    public required Guid Id { get; init; }
+    public required Word Word { get; init; }
 }

@@ -23,6 +23,11 @@ public class GamesControllerTests : ControllerTestsBase
         ).ShouldBeOfType<GameDto>();
         var location = response.Headers.Location.ShouldNotBeNull();
         location.OriginalString.ShouldBe($"/games/{gameDto.Id}");
+        gameDto.Word.ShouldNotBeNull();
+        gameDto.Word.Value.ShouldBeOfType<string>();
+        gameDto.Word.Value.All(char.IsLower).ShouldBeTrue();
+        gameDto.Word.DisplayText.All(char.IsUpper).ShouldBeTrue();
+        gameDto.Word.Length.ShouldBe(gameDto.Word.Value.Length);
     }
 
     [Test]
@@ -56,5 +61,10 @@ public class GamesControllerTests : ControllerTestsBase
             await response.Content.ReadFromJsonAsync<GameDto>()
         ).ShouldBeOfType<GameDto>();
         gameDto.Id.ShouldBe(gameId);
+        gameDto.Word.ShouldNotBeNull();
+        gameDto.Word.Value.ShouldBeOfType<string>();
+        gameDto.Word.Value.All(char.IsLower).ShouldBeTrue();
+        gameDto.Word.DisplayText.All(char.IsUpper).ShouldBeTrue();
+        gameDto.Word.Length.ShouldBe(gameDto.Word.Value.Length);
     }
 }

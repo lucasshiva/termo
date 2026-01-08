@@ -3,11 +3,12 @@ using Termo.Api.Repositories;
 
 namespace Termo.Api.UseCases;
 
-public class CreateGameUseCase(IGameRepository gameRepository)
+public class CreateGameUseCase(IGameRepository gameRepository, IWordRepository wordRepository)
 {
     public async Task<GameDto> ExecuteAsync()
     {
-        var game = new GameDto { Id = Guid.NewGuid() };
+        var word = wordRepository.GetRandomWord();
+        var game = new GameDto { Id = Guid.NewGuid(), Word = word };
         await gameRepository.AddAsync(game);
         return game;
     }
