@@ -1,16 +1,19 @@
 using Microsoft.AspNetCore.Mvc;
-using Termo.Api.Repositories;
+using Termo.Api.UseCases;
 
 namespace Termo.Api.Controllers;
 
 [ApiController]
 [Route("/games")]
-public class GamesController(IGameRepository gameRepository) : ControllerBase
+public class GamesController(
+    CreateGameUseCase createGameUseCase,
+    GetGameByIdUseCase getGameByIdUseCase
+) : ControllerBase
 {
     [Route("{gameId:guid}")]
     public async Task<IActionResult> GetById(Guid gameId)
     {
-        var game = await gameRepository.GetByIdAsync(gameId);
+        var game = await getGameByIdUseCase.ExecuteAsync(gameId);
         if (game is null)
             return NotFound(gameId);
 
@@ -20,7 +23,7 @@ public class GamesController(IGameRepository gameRepository) : ControllerBase
     [HttpPost]
     public async Task<IActionResult> CreateGame()
     {
-        var game = await gameRepository.CreateAsync();
+        var game = await createGameUseCase.ExecuteAsync();
         return Created($"/games/{game.Id}", game);
     }
 }
