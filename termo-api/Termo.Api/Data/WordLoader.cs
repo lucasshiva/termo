@@ -31,10 +31,10 @@ public class WordLoader : IWordLoader
                 json,
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = false }
             );
-            return model!.Words.Select(entry => new Word(
-                entry,
-                model.AccentMapping.GetValueOrDefault(entry)
-            ));
+            return model!
+                // Avoids throwing an exception for words with wrong length.
+                .Words.Where(w => w.Length == Word.DefaultLength)
+                .Select(entry => new Word(entry, model.AccentMapping.GetValueOrDefault(entry)));
         }
         catch (ArgumentNullException e)
         {

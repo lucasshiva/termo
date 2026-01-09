@@ -2,7 +2,7 @@ using System.IO.Abstractions.TestingHelpers;
 using Shouldly;
 using Termo.Api.Data;
 
-namespace Termo.Api.Tests.Unit;
+namespace Termo.Api.Tests.Unit.WordTests;
 
 public class WordLoaderTests
 {
@@ -37,6 +37,24 @@ public class WordLoaderTests
         word.Length.ShouldBe(5);
     }
 
+    [Test]
+    public void LoadWords_IgnoresWordsWithWrongLength()
+    {
+        // Arrange
+        var fileSystem = new MockFileSystem();
+        fileSystem.AddFile(JsonFilePath, new MockFileData(TestJson.WrongLengthWords));
+        var loader = new WordLoader(JsonFilePath, fileSystem);
+
+        // Act
+        var words = loader.LoadWords().ToList();
+
+        // Assert
+        words.Count.ShouldBe(1);
+        var firstWord = words.First();
+        firstWord.Value.ShouldBe("casal");
+        firstWord.DisplayText.ShouldBe("CASAL");
+    }
+
     private static class TestJson
     {
         public const string Valid = """
@@ -50,6 +68,13 @@ public class WordLoaderTests
             {
                 "words": ["fogao"],
                 "accentMapping": { "fogao": "fogão" }
+            }
+            """;
+
+        public const string WrongLengthWords = """
+            {
+                "Words": ["casal", "aves", "celular"],
+                "AccentMapping": {}
             }
             """;
     }

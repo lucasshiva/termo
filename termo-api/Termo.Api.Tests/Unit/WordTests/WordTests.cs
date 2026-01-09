@@ -1,7 +1,7 @@
 using Shouldly;
 using Termo.Api.Models;
 
-namespace Termo.Api.Tests.Unit;
+namespace Termo.Api.Tests.Unit.WordTests;
 
 public class WordTests
 {
@@ -26,6 +26,17 @@ public class WordTests
         Assert.Throws<ArgumentException>(() =>
         {
             var _ = new Word("");
+        });
+    }
+
+    [Test]
+    [Arguments("cama")]
+    [Arguments("frutas")]
+    public void Constructor_WithWrongLengthValue_ThrowsException(string value)
+    {
+        Assert.Throws<ArgumentException>(() =>
+        {
+            var _ = new Word(value);
         });
     }
 }

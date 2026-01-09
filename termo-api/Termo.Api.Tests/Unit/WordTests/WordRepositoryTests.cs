@@ -2,7 +2,7 @@ using Shouldly;
 using Termo.Api.Models;
 using Termo.Api.Repositories;
 
-namespace Termo.Api.Tests.Unit;
+namespace Termo.Api.Tests.Unit.WordTests;
 
 public class WordRepositoryTests
 {
