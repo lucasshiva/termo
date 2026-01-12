@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Termo.Api.Dtos;
 using Termo.Api.Requests;
 using Termo.Api.UseCases;
 
@@ -15,7 +16,7 @@ public class GamesController(
     [Route("{gameId:guid}")]
     public async Task<IActionResult> GetById(Guid gameId)
     {
-        var game = await getGameByIdUseCase.ExecuteAsync(gameId);
+        GameDto? game = await getGameByIdUseCase.ExecuteAsync(gameId);
         if (game is null)
             return NotFound(gameId);
 
@@ -25,14 +26,14 @@ public class GamesController(
     [HttpPost]
     public async Task<IActionResult> CreateGame()
     {
-        var game = await createGameUseCase.ExecuteAsync();
-        return Created($"/games/{game.Id}", game);
+        GameDto game = await createGameUseCase.ExecuteAsync();
+        return Created(uri: $"/games/{game.Id}", value: game);
     }
 
     [HttpPost("{gameId:guid}/guess")]
     public async Task<IActionResult> SubmitGuess(Guid gameId, [FromBody] SubmitGuessRequest request)
     {
-        var game = await submitGuessUseCase.ExecuteAsync(gameId, request.Guess);
+        GameDto game = await submitGuessUseCase.ExecuteAsync(gameId: gameId, guess: request.Guess);
         return Ok(game);
     }
 }

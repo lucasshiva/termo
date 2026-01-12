@@ -22,9 +22,12 @@ public record Word
     private static void ValidateValue(string value)
     {
         if (string.IsNullOrWhiteSpace(value))
-            throw new ArgumentException("Value cannot be empty", nameof(value));
+            throw new ArgumentException(message: "Value cannot be empty", paramName: nameof(value));
 
         if (value.Length != DefaultLength)
-            throw new ArgumentException("Value is of wrong length", nameof(value));
+            throw new ArgumentException(
+                message: "Value is of wrong length",
+                paramName: nameof(value)
+            );
     }
 }

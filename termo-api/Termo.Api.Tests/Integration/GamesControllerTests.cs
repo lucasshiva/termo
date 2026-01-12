@@ -13,17 +13,17 @@ public class GamesControllerTests : ControllerTestsBase
     public async Task CreateGame_ReturnsGameDto()
     {
         // Arrange
-        var client = Factory.CreateClient();
+        HttpClient client = Factory.CreateClient();
 
         // Act
-        var response = await client.PostAsync("/games", null);
+        HttpResponseMessage response = await client.PostAsync(requestUri: "/games", content: null);
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.Created);
-        var gameDto = (
+        GameDto gameDto = (
             await response.Content.ReadFromJsonAsync<GameDto>()
         ).ShouldBeOfType<GameDto>();
-        var location = response.Headers.Location.ShouldNotBeNull();
+        Uri location = response.Headers.Location.ShouldNotBeNull();
         location.OriginalString.ShouldBe($"/games/{gameDto.Id}");
         gameDto.Word.ShouldNotBeNull();
         gameDto.Word.Value.ShouldBeOfType<string>();
@@ -36,10 +36,10 @@ public class GamesControllerTests : ControllerTestsBase
     public async Task GetById_WithInvalidId_ReturnsNotFound()
     {
         // Arrange
-        var client = Factory.CreateClient();
+        HttpClient client = Factory.CreateClient();
 
         // Act
-        var response = await client.GetAsync($"/games/{Guid.NewGuid()}");
+        HttpResponseMessage response = await client.GetAsync($"/games/{Guid.NewGuid()}");
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.NotFound);
@@ -49,15 +49,15 @@ public class GamesControllerTests : ControllerTestsBase
     public async Task GetById_WithValidId_ReturnsGameDto()
     {
         // Arrange
-        var client = Factory.CreateClient();
-        var game = await CreateGame(client);
+        HttpClient client = Factory.CreateClient();
+        GameDto game = await CreateGame(client);
 
         // Act
-        var response = await client.GetAsync($"/games/{game.Id}");
+        HttpResponseMessage response = await client.GetAsync($"/games/{game.Id}");
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
-        var gameDto = (
+        GameDto gameDto = (
             await response.Content.ReadFromJsonAsync<GameDto>()
         ).ShouldBeOfType<GameDto>();
         gameDto.Id.ShouldBe(game.Id);
@@ -72,16 +72,19 @@ public class GamesControllerTests : ControllerTestsBase
     public async Task SubmitGuess_WithCorrectGuess_WinsGame()
     {
         // Arrange
-        var client = Factory.CreateClient();
-        var game = await CreateGame(client);
+        HttpClient client = Factory.CreateClient();
+        GameDto game = await CreateGame(client);
         var request = new SubmitGuessRequest { Guess = FakeWordRepository.TargetWord.Value };
 
         // Act
-        var response = await client.PostAsJsonAsync($"/games/{game.Id}/guess", request);
+        HttpResponseMessage response = await client.PostAsJsonAsync(
+            requestUri: $"/games/{game.Id}/guess",
+            value: request
+        );
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
-        var updatedGame = (
+        GameDto updatedGame = (
             await response.Content.ReadFromJsonAsync<GameDto>()
         ).ShouldBeOfType<GameDto>();
         updatedGame.State.ShouldBe(GameState.Won);
@@ -91,21 +94,24 @@ public class GamesControllerTests : ControllerTestsBase
     public async Task SubmitGuess_WithWrongGuesses_LosesGame()
     {
         // Arrange
-        var client = Factory.CreateClient();
-        var game = await CreateGame(client);
+        HttpClient client = Factory.CreateClient();
+        GameDto game = await CreateGame(client);
 
         // Act
         HttpResponseMessage? lastResponse = null;
         for (var i = 0; i < game.MaxGuesses; i++)
         {
             var request = new SubmitGuessRequest { Guess = FakeWordRepository.WrongWord.Value };
-            lastResponse = await client.PostAsJsonAsync($"/games/{game.Id}/guess", request);
+            lastResponse = await client.PostAsJsonAsync(
+                requestUri: $"/games/{game.Id}/guess",
+                value: request
+            );
         }
 
         // Assert
         lastResponse.ShouldNotBeNull();
         lastResponse.StatusCode.ShouldBe(HttpStatusCode.OK);
-        var updatedGame = (
+        GameDto updatedGame = (
             await lastResponse.Content.ReadFromJsonAsync<GameDto>()
         ).ShouldBeOfType<GameDto>();
         updatedGame.State.ShouldBe(GameState.Lost);
@@ -114,7 +120,10 @@ public class GamesControllerTests : ControllerTestsBase
 
     private static async Task<GameDto> CreateGame(HttpClient client)
     {
-        var createResponse = await client.PostAsync("/games", null);
+        HttpResponseMessage createResponse = await client.PostAsync(
+            requestUri: "/games",
+            content: null
+        );
         return (await createResponse.Content.ReadFromJsonAsync<GameDto>())!;
     }
 }

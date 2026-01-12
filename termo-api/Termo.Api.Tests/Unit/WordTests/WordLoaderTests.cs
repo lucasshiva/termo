@@ -1,6 +1,7 @@
 using System.IO.Abstractions.TestingHelpers;
 using Shouldly;
 using Termo.Api.Data;
+using Termo.Api.Models;
 
 namespace Termo.Api.Tests.Unit.WordTests;
 
@@ -13,8 +14,8 @@ public class WordLoaderTests
     {
         // Arrange
         var fileSystem = new MockFileSystem();
-        fileSystem.AddFile(JsonFilePath, new MockFileData(TestJson.InvalidKeys));
-        var loader = new WordLoader(JsonFilePath, fileSystem);
+        fileSystem.AddFile(path: JsonFilePath, mockFile: new MockFileData(TestJson.InvalidKeys));
+        var loader = new WordLoader(filePath: JsonFilePath, fileSystem: fileSystem);
 
         // Act / Assert
         Assert.Throws<InvalidDataException>(() => loader.LoadWords());
@@ -25,11 +26,11 @@ public class WordLoaderTests
     {
         // Arrange
         var fileSystem = new MockFileSystem();
-        fileSystem.AddFile(JsonFilePath, new MockFileData(TestJson.Valid));
-        var loader = new WordLoader(JsonFilePath, fileSystem);
+        fileSystem.AddFile(path: JsonFilePath, mockFile: new MockFileData(TestJson.Valid));
+        var loader = new WordLoader(filePath: JsonFilePath, fileSystem: fileSystem);
 
         // Act
-        var word = loader.LoadWords().Single();
+        Word word = loader.LoadWords().Single();
 
         // Assert
         word.Value.ShouldBe("fogao"); // Always in lowercase
@@ -42,15 +43,18 @@ public class WordLoaderTests
     {
         // Arrange
         var fileSystem = new MockFileSystem();
-        fileSystem.AddFile(JsonFilePath, new MockFileData(TestJson.WrongLengthWords));
-        var loader = new WordLoader(JsonFilePath, fileSystem);
+        fileSystem.AddFile(
+            path: JsonFilePath,
+            mockFile: new MockFileData(TestJson.WrongLengthWords)
+        );
+        var loader = new WordLoader(filePath: JsonFilePath, fileSystem: fileSystem);
 
         // Act
         var words = loader.LoadWords().ToList();
 
         // Assert
         words.Count.ShouldBe(1);
-        var firstWord = words.First();
+        Word firstWord = words.First();
         firstWord.Value.ShouldBe("casal");
         firstWord.DisplayText.ShouldBe("CASAL");
     }

@@ -1,4 +1,5 @@
 using Shouldly;
+using Termo.Api.Dtos;
 using Termo.Api.Guesses;
 using Termo.Api.Models;
 
@@ -33,8 +34,8 @@ public class GuessEvaluatorTests
     );
 
     private static readonly GuessEvaluationCase FogaoPavao = new(
-        Target: new Word("fogao", "FOGÃO"),
-        Guess: new Word("pavao", "PAVÃO"),
+        Target: new Word(value: "fogao", displayText: "FOGÃO"),
+        Guess: new Word(value: "pavao", displayText: "PAVÃO"),
         ExpectedStates:
         [
             LetterState.Absent,
@@ -54,7 +55,7 @@ public class GuessEvaluatorTests
         var evaluator = new GuessEvaluator();
 
         // Act
-        var guessDto = evaluator.Evaluate(guess, target);
+        GuessDto guessDto = evaluator.Evaluate(guess: guess, target: target);
 
         // Assert
         guessDto.Value.ShouldBe(guess.Value);
@@ -73,7 +74,7 @@ public class GuessEvaluatorTests
         var evaluator = new GuessEvaluator();
 
         // Act
-        var guessDto = evaluator.Evaluate(guess, target);
+        GuessDto guessDto = evaluator.Evaluate(guess: guess, target: target);
 
         // Assert
         guessDto.Value.ShouldBe(guess.Value);
@@ -88,12 +89,12 @@ public class GuessEvaluatorTests
     )
     {
         // Arrange
-        var target = testCase.Target;
-        var guess = testCase.Guess;
+        Word target = testCase.Target;
+        Word guess = testCase.Guess;
         var evaluator = new GuessEvaluator();
 
         // Act
-        var guessDto = evaluator.Evaluate(guess, target);
+        GuessDto guessDto = evaluator.Evaluate(guess: guess, target: target);
 
         // Assert
         guessDto.Value.ShouldBe(guess.Value);

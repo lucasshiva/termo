@@ -1,5 +1,6 @@
 using NSubstitute;
 using Shouldly;
+using Termo.Api.Dtos;
 using Termo.Api.Models;
 using Termo.Api.Repositories;
 using Termo.Api.UseCases;
@@ -17,10 +18,13 @@ public class CreateGameUseCaseTests
         // Arrange
         var word = new Word("casal");
         _wordRepository.GetRandomWord().Returns(word);
-        var useCase = new CreateGameUseCase(_gameRepository, _wordRepository);
+        var useCase = new CreateGameUseCase(
+            gameRepository: _gameRepository,
+            wordRepository: _wordRepository
+        );
 
         // Act
-        var game = await useCase.ExecuteAsync();
+        GameDto game = await useCase.ExecuteAsync();
 
         // Assert
         game.Word.ShouldBe(word);

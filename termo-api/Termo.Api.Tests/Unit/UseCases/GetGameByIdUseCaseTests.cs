@@ -20,7 +20,7 @@ public class GetGameByIdUseCaseTests
         var useCase = new GetGameByIdUseCase(_gameRepository);
 
         // Act
-        var foundGame = await useCase.ExecuteAsync(game.Id);
+        GameDto? foundGame = await useCase.ExecuteAsync(game.Id);
         foundGame.ShouldNotBeNull();
         await _gameRepository.Received().GetByIdAsync(game.Id);
         foundGame.Id.ShouldBe(game.Id);

@@ -10,11 +10,11 @@ public class WordRepositoryTests
     public void GetRandomWord_ReturnsAValidWord()
     {
         // Arrange
-        List<Word> words = [new("fogao", "fogão")];
+        List<Word> words = [new(value: "fogao", displayText: "fogão")];
         var repo = new WordRepository(words);
 
         // Act
-        var chosenWord = repo.GetRandomWord();
+        Word chosenWord = repo.GetRandomWord();
 
         // Assert
         chosenWord.ShouldBe(words.First());
@@ -24,12 +24,12 @@ public class WordRepositoryTests
     public void FindWord_WithWrongInput_ReturnsNull()
     {
         // Arrange
-        List<Word> words = [new("fogao", "fogão")];
+        List<Word> words = [new(value: "fogao", displayText: "fogão")];
         const string input = "casal";
         var repo = new WordRepository(words);
 
         // Act
-        var word = repo.FindWord(input);
+        Word? word = repo.FindWord(input);
 
         // Assert
         word.ShouldBeNull();
@@ -39,12 +39,12 @@ public class WordRepositoryTests
     public void FindWord_WithCorrectInput_ReturnsTheCorrectWord()
     {
         // Arrange
-        List<Word> words = [new("fogao", "fogão")];
+        List<Word> words = [new(value: "fogao", displayText: "fogão")];
         const string input = "fogao";
         var repo = new WordRepository(words);
 
         // Act
-        var word = repo.FindWord(input);
+        Word? word = repo.FindWord(input);
 
         // Assert
         word.ShouldNotBeNull();

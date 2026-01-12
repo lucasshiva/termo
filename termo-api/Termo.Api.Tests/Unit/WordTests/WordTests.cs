@@ -8,7 +8,7 @@ public class WordTests
     [Test]
     public void Constructor_WithValidStrings_NormalizesValueAndDisplayText()
     {
-        var word = new Word("Fogao", "foGãO");
+        var word = new Word(value: "Fogao", displayText: "foGãO");
         word.Value.ShouldBe("fogao");
         word.DisplayText.ShouldBe("FOGÃO");
     }

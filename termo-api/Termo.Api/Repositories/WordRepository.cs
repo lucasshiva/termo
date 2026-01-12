@@ -15,7 +15,7 @@ public class WordRepository : IWordRepository
 
     public WordRepository(IEnumerable<Word> words)
     {
-        _inputToWord = words.ToDictionary(w => w.Value, w => w);
+        _inputToWord = words.ToDictionary(keySelector: w => w.Value, elementSelector: w => w);
         _wordsArray = _inputToWord.Values.ToArray();
     }
 

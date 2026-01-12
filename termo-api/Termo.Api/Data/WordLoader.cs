@@ -6,7 +6,7 @@ namespace Termo.Api.Data;
 
 public interface IWordLoader
 {
-    IEnumerable<Word> LoadWords();
+    public IEnumerable<Word> LoadWords();
 }
 
 public record WordsModel(IEnumerable<string> Words, Dictionary<string, string> AccentMapping);
@@ -24,21 +24,27 @@ public class WordLoader : IWordLoader
 
     public IEnumerable<Word> LoadWords()
     {
-        var json = _fileSystem.File.ReadAllText(_filePath);
+        string json = _fileSystem.File.ReadAllText(_filePath);
         try
         {
-            var model = JsonSerializer.Deserialize<WordsModel>(
-                json,
-                new JsonSerializerOptions { PropertyNameCaseInsensitive = false }
+            WordsModel? model = JsonSerializer.Deserialize<WordsModel>(
+                json: json,
+                options: new JsonSerializerOptions { PropertyNameCaseInsensitive = false }
             );
             return model!
                 // Avoids throwing an exception for words with wrong length.
                 .Words.Where(w => w.Length == Word.DefaultLength)
-                .Select(entry => new Word(entry, model.AccentMapping.GetValueOrDefault(entry)));
+                .Select(entry => new Word(
+                    value: entry,
+                    displayText: model.AccentMapping.GetValueOrDefault(entry)
+                ));
         }
         catch (ArgumentNullException e)
         {
-            throw new InvalidDataException("Failed to load words from file: ", e);
+            throw new InvalidDataException(
+                message: "Failed to load words from file: ",
+                innerException: e
+            );
         }
     }
 }

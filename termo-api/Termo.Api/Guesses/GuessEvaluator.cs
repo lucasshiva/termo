@@ -5,7 +5,7 @@ namespace Termo.Api.Guesses;
 
 public interface IGuessEvaluator
 {
-    GuessDto Evaluate(Word guess, Word target);
+    public GuessDto Evaluate(Word guess, Word target);
 }
 
 public class GuessEvaluator : IGuessEvaluator
@@ -18,21 +18,21 @@ public class GuessEvaluator : IGuessEvaluator
         var remaining = new Dictionary<char, int>();
         for (var i = 0; i < guess.Length; i++)
         {
-            var t = target.Value[i];
-            if (!remaining.TryAdd(t, 1))
+            char t = target.Value[i];
+            if (!remaining.TryAdd(key: t, value: 1))
                 remaining[t]++;
         }
 
         // First pass: correct letters
         for (var i = 0; i < guess.Length; i++)
         {
-            var g = guess.Value[i];
-            var t = target.Value[i];
+            char g = guess.Value[i];
+            char t = target.Value[i];
 
             if (g != t)
                 continue;
 
-            evaluations[i] = new LetterEvaluation(g, LetterState.Correct);
+            evaluations[i] = new LetterEvaluation(Letter: g, State: LetterState.Correct);
             remaining[g]--;
         }
 
@@ -42,16 +42,16 @@ public class GuessEvaluator : IGuessEvaluator
             if (evaluations.ElementAtOrDefault(i) != null)
                 continue;
 
-            var g = guess.Value[i];
+            char g = guess.Value[i];
 
-            if (remaining.TryGetValue(g, out var count) && count > 0)
+            if (remaining.TryGetValue(key: g, value: out int count) && count > 0)
             {
-                evaluations[i] = new LetterEvaluation(g, LetterState.Present);
+                evaluations[i] = new LetterEvaluation(Letter: g, State: LetterState.Present);
                 remaining[g]--;
             }
             else
             {
-                evaluations[i] = new LetterEvaluation(g, LetterState.Absent);
+                evaluations[i] = new LetterEvaluation(Letter: g, State: LetterState.Absent);
             }
         }
 

@@ -19,10 +19,13 @@ public class SubmitGuessUseCaseTests
         var targetWord = new Word("casal");
         var fakeGame = new GameDto { Id = Guid.NewGuid(), Word = targetWord };
         await _gameRepository.AddAsync(fakeGame);
-        var useCase = new SubmitGuessUseCase(_gameRepository, _guessEvaluator);
+        var useCase = new SubmitGuessUseCase(
+            gameRepository: _gameRepository,
+            guessEvaluator: _guessEvaluator
+        );
 
         // Act
-        var gameDto = await useCase.ExecuteAsync(fakeGame.Id, "casal");
+        GameDto gameDto = await useCase.ExecuteAsync(gameId: fakeGame.Id, guess: "casal");
 
         // Assert
         gameDto.State.ShouldBe(GameState.Won);
@@ -40,13 +43,16 @@ public class SubmitGuessUseCaseTests
         var targetWord = new Word("casal");
         var fakeGame = new GameDto { Id = Guid.NewGuid(), Word = targetWord };
         await _gameRepository.AddAsync(fakeGame);
-        var useCase = new SubmitGuessUseCase(_gameRepository, _guessEvaluator);
+        var useCase = new SubmitGuessUseCase(
+            gameRepository: _gameRepository,
+            guessEvaluator: _guessEvaluator
+        );
 
         // Act
         GameDto? gameDto = null;
         // Guess wrong word on purpose
         for (var i = 0; i < fakeGame.MaxGuesses; i++)
-            gameDto = await useCase.ExecuteAsync(fakeGame.Id, "placa");
+            gameDto = await useCase.ExecuteAsync(gameId: fakeGame.Id, guess: "placa");
 
         // Assert
         gameDto.ShouldNotBeNull();

@@ -15,6 +15,6 @@ public class FakeWordRepository : IWordRepository
 
     public Word? FindWord(string input)
     {
-        return string.Equals(input, TargetWord.Value) ? TargetWord : null;
+        return string.Equals(a: input, b: TargetWord.Value) ? TargetWord : null;
     }
 }
