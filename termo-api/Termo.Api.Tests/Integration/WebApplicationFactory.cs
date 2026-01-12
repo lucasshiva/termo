@@ -14,6 +14,7 @@ public class WebApplicationFactory : TestWebApplicationFactory<Program>
         builder.ConfigureServices(services =>
         {
             services.AddSingleton<IGameRepository, InMemoryGameRepository>();
+            services.AddSingleton<IWordRepository, FakeWordRepository>();
         });
     }
 }

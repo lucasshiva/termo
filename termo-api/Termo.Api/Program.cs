@@ -1,5 +1,6 @@
 using System.IO.Abstractions;
 using Termo.Api.Data;
+using Termo.Api.Guesses;
 using Termo.Api.Repositories;
 using Termo.Api.UseCases;
 
@@ -8,6 +9,7 @@ builder.Services.AddControllers();
 
 builder.Services.AddSingleton<IFileSystem, FileSystem>();
 builder.Services.AddSingleton<IGameRepository, InMemoryGameRepository>();
+builder.Services.AddSingleton<IGuessEvaluator, GuessEvaluator>();
 builder.Services.AddSingleton<IWordRepository>(sp =>
 {
     var env = sp.GetRequiredService<IWebHostEnvironment>();
@@ -19,6 +21,7 @@ builder.Services.AddSingleton<IWordRepository>(sp =>
 });
 builder.Services.AddSingleton<CreateGameUseCase>();
 builder.Services.AddSingleton<GetGameByIdUseCase>();
+builder.Services.AddSingleton<SubmitGuessUseCase>();
 
 var app = builder.Build();
 app.MapControllers();

@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Termo.Api.Requests;
 using Termo.Api.UseCases;
 
 namespace Termo.Api.Controllers;
@@ -7,7 +8,8 @@ namespace Termo.Api.Controllers;
 [Route("/games")]
 public class GamesController(
     CreateGameUseCase createGameUseCase,
-    GetGameByIdUseCase getGameByIdUseCase
+    GetGameByIdUseCase getGameByIdUseCase,
+    SubmitGuessUseCase submitGuessUseCase
 ) : ControllerBase
 {
     [Route("{gameId:guid}")]
@@ -25,5 +27,12 @@ public class GamesController(
     {
         var game = await createGameUseCase.ExecuteAsync();
         return Created($"/games/{game.Id}", game);
+    }
+
+    [HttpPost("{gameId:guid}/guess")]
+    public async Task<IActionResult> SubmitGuess(Guid gameId, [FromBody] SubmitGuessRequest request)
+    {
+        var game = await submitGuessUseCase.ExecuteAsync(gameId, request.Guess);
+        return Ok(game);
     }
 }
