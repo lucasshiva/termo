@@ -6,6 +6,25 @@ using Termo.Api.Repositories;
 using Termo.Api.UseCases;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+if (builder.Environment.IsDevelopment())
+{
+    string frontendUrl = builder.Configuration["Frontend:Url"] ?? "http://localhost:5173";
+    builder.Services.AddCors(opts =>
+    {
+        opts.AddPolicy(
+            name: "DevPolicy",
+            configurePolicy: policy =>
+            {
+                policy
+                    .WithOrigins(frontendUrl)
+                    .AllowAnyHeader()
+                    .AllowAnyMethod()
+                    .AllowCredentials();
+            }
+        );
+    });
+}
+
 builder.Services.AddControllers();
 
 builder.Services.AddSingleton<IFileSystem, FileSystem>();
@@ -25,5 +44,9 @@ builder.Services.AddSingleton<GetGameByIdUseCase>();
 builder.Services.AddSingleton<SubmitGuessUseCase>();
 
 WebApplication app = builder.Build();
+if (app.Environment.IsDevelopment())
+    app.UseCors("DevPolicy");
+app.UsePathBase("/api");
+app.UseRouting();
 app.MapControllers();
 app.Run();
