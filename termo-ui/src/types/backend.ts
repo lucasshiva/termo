@@ -23,13 +23,13 @@ export interface LetterEvaluation {
 }
 
 export enum LetterState {
-  CORRECT = 'correct',
-  PRESENT = 'present',
-  ABSENT = 'absent',
+  CORRECT = 'Correct',
+  PRESENT = 'Present',
+  ABSENT = 'Absent',
 }
 
 export enum GameState {
-  IN_PROGRESS = 'in_progress',
-  WON = 'won',
-  LOST = 'lost',
+  IN_PROGRESS = 'InProgress',
+  WON = 'Won',
+  LOST = 'Lost',
 }
