@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using Termo.Api.Models;
 
 namespace Termo.Api.Dtos;
@@ -8,5 +9,7 @@ public record GameDto
     public required Word Word { get; init; }
     public int MaxGuesses { get; init; } = 6;
     public IReadOnlyList<GuessDto> Guesses { get; init; } = [];
+
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public GameState State { get; set; } = GameState.InProgress;
 }
