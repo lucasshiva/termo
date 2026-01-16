@@ -13,5 +13,13 @@ export function useApi() {
     return response.json()
   }
 
-  return { createGame }
+  async function getGame(id: string): Promise<GameDto> {
+    const response = await fetch(`${baseURL}/games/${id}`)
+    if (!response.ok) throw new Error('Game not found')
+    const json = await response.json()
+    console.log(json)
+    return json
+  }
+
+  return { createGame, getGame }
 }
