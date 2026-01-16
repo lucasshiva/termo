@@ -1,11 +1,18 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { onMounted } from 'vue'
+import { useGameStore } from './stores/gameStore'
+
+const gameStore = useGameStore()
+
+onMounted(async () => {
+  await gameStore.createGame()
+})
+</script>
 
 <template>
-  <h1 class="font-bold">You did it!</h1>
-  <p>
-    Visit <a href="https://vuejs.org/" target="_blank" rel="noopener">vuejs.org</a> to read the
-    documentation
-  </p>
+  <div class="h-full flex items-center justify-center">
+    <div v-if="gameStore.loading">Loading...</div>
+    <div v-else-if="gameStore.error">Error creating game!</div>
+    <div v-else>Created game: {{ gameStore.game }}</div>
+  </div>
 </template>
-
-<style scoped></style>
