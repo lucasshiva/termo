@@ -18,7 +18,7 @@ public class GamesController(
     {
         GameDto? game = await getGameByIdUseCase.ExecuteAsync(gameId);
         if (game is null)
-            return NotFound(gameId);
+            return NotFound("Game not found");
 
         return Ok(game);
     }

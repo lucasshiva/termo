@@ -43,6 +43,8 @@ public class GamesControllerTests : ControllerTestsBase
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.NotFound);
+        string content = await response.Content.ReadAsStringAsync();
+        content.ShouldBe("Game not found");
     }
 
     [Test]
