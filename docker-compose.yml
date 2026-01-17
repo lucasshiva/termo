@@ -1,0 +1,9 @@
+services:
+  termo:
+    build: .
+    container_name: termo
+    environment:
+      - ASPNETCORE_URLS=http://0.0.0.0:5274
+    ports:
+      - "8080:80"
+    restart: unless-stopped

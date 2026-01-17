@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import { useGameStore } from '@/stores/gameStore'
 import { onMounted } from 'vue'
-import { useGameStore } from './stores/gameStore'
 
 const gameStore = useGameStore()
 
@@ -12,7 +12,7 @@ onMounted(async () => {
 <template>
   <div class="h-full flex items-center justify-center">
     <div v-if="gameStore.loading">Loading...</div>
-    <div v-else-if="gameStore.error">Error creating game!</div>
+    <div v-else-if="gameStore.error">Error creating game: {{ gameStore.error.message }}</div>
     <div v-else>Created game: {{ gameStore.game }}</div>
   </div>
 </template>

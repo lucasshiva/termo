@@ -8,7 +8,7 @@ export const useGameStore = defineStore('game', () => {
   const api = useApi()
   const game = ref<GameDto>()
   const loading = ref(true)
-  const error = ref(false)
+  const error = ref<Error | null>(null)
 
   async function createGame() {
     loading.value = true
@@ -36,7 +36,7 @@ export const useGameStore = defineStore('game', () => {
         await createNewGame()
       }
     } catch (e) {
-      error.value = true
+      error.value = e as Error
     } finally {
       loading.value = false
     }

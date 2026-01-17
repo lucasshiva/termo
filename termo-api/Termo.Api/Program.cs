@@ -32,10 +32,9 @@ builder.Services.AddSingleton<IGameRepository, InMemoryGameRepository>();
 builder.Services.AddSingleton<IGuessEvaluator, GuessEvaluator>();
 builder.Services.AddSingleton<IWordRepository>(sp =>
 {
-    IWebHostEnvironment env = sp.GetRequiredService<IWebHostEnvironment>();
-    string filePath = Path.Combine(path1: env.ContentRootPath, path2: "Data", path3: "words.json");
+    string filePath = Path.Combine(AppContext.BaseDirectory, "Data", "words.json");
     IFileSystem fileSystem = sp.GetRequiredService<IFileSystem>();
-    var loader = new WordLoader(filePath: filePath, fileSystem: fileSystem);
+    var loader = new WordLoader(filePath, fileSystem);
     IEnumerable<Word> words = loader.LoadWords();
     return new WordRepository(words);
 });
