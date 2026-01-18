@@ -9,7 +9,13 @@ const keys = [
 </script>
 
 <template>
-  <div v-for="(row, index) in keys" :key="index" class="flex gap-1 m-1 items-center justify-center">
-    <KeyboardKey v-for="letter in row" :letter="letter" />
+  <div>
+    <div
+      v-for="(row, index) in keys"
+      :key="index"
+      class="flex gap-0.5 sm:gap-1 m-0.5 sm:m-1 items-center justify-center"
+    >
+      <KeyboardKey v-for="letter in row" :letter="letter" />
+    </div>
   </div>
 </template>

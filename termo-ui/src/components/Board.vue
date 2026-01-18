@@ -9,18 +9,14 @@ const columns = game.word.length
 
 <template>
   <div id="board" class="space-y-1">
-    <div
-      v-for="row in rows"
-      :key="row"
-      class="grid gap-1"
-      :style="{ gridTemplateColumns: `repeat(${columns}, 5rem)` }"
-    >
+    <div v-for="row in rows" :key="row" class="grid gap-1 grid-cols-5">
       <div
         v-for="column in columns"
         :key="column"
-        class="w-20 h-20 rounded-sm border-2 bg-border flex items-center justify-center"
+        class="rounded-sm border-2 bg-border flex items-center justify-center"
+        style="width: var(--tile); height: var(--tile); font-size: var(--font)"
       >
-        <p class="text-5xl font-bold">A</p>
+        <p class="font-bold">A</p>
       </div>
     </div>
   </div>

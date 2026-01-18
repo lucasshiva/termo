@@ -5,18 +5,22 @@ import Keyboard from './Keyboard.vue';
 </script>
 
 <template>
-  <div
-    class="bg-accent flex items-center justify-center h-screen overflow-hidden text-accent-foreground"
-  >
-    <div class="h-full w-3xl flex flex-col">
+  <div class="bg-accent h-screen overflow-hidden text-accent-foreground grid place-items-center">
+    <div class="h-full grid grid-rows-[auto_1fr]">
       <GameHeader />
 
-      <main class="flex items-center justify-center mt-12 flex-1">
-        <Board />
-      </main>
+      <div
+        class="min-h-0 grid overflow-hidden grid-rows-[1fr_auto_1fr_auto] place-items-center mt-4"
+      >
+        <!-- top spacer -->
+        <div />
 
-      <div class="mb-4">
-        <Keyboard />
+        <Board />
+
+        <!-- bottom spacer -->
+        <div />
+
+        <Keyboard class="mb-4" />
       </div>
     </div>
   </div>

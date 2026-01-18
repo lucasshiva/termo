@@ -74,6 +74,14 @@
   --sidebar-accent-foreground: oklch(0.21 0.006 285.885);
   --sidebar-border: oklch(0.92 0.004 286.32);
   --sidebar-ring: oklch(0.708 0 0);
+  --tile: 8.5vh;
+  --key: 6.5vh;
+  --font: 5vh;
+  --font-key: 2.5vh;
+  /* --tile: clamp(2rem, 8.5vh, 12rem);
+  --key: clamp(1.5rem, 6.5vh, 4rem);
+  --font: clamp(1rem, 5vh, 3rem);
+  --font-key: clamp(0.5rem, 2.5vh, 2.5rem); */
 }
 
 .dark {
