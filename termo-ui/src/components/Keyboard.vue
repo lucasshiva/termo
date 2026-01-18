@@ -1,0 +1,15 @@
+<script lang="ts" setup>
+import KeyboardKey from './KeyboardKey.vue';
+
+const keys = [
+  ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'],
+  ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'DELETE'],
+  ['Z', 'X', 'C', 'V', 'B', 'N', 'M', 'ENTER'],
+]
+</script>
+
+<template>
+  <div v-for="(row, index) in keys" :key="index" class="flex gap-1 m-1 items-center justify-center">
+    <KeyboardKey v-for="letter in row" :letter="letter" />
+  </div>
+</template>
