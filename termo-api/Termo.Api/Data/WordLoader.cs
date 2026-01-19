@@ -1,4 +1,6 @@
+using System.Globalization;
 using System.IO.Abstractions;
+using System.Text;
 using System.Text.Json;
 using Termo.Api.Models;
 
@@ -29,15 +31,28 @@ public class WordLoader : IWordLoader
         {
             WordsModel? model = JsonSerializer.Deserialize<WordsModel>(
                 json: json,
-                options: new JsonSerializerOptions { PropertyNameCaseInsensitive = false }
+                options: new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
             );
-            return model!
-                // Avoids throwing an exception for words with wrong length.
-                .Words.Where(w => w.Length == Word.DefaultLength)
-                .Select(entry => new Word(
-                    value: entry,
-                    displayText: model.AccentMapping.GetValueOrDefault(entry)
-                ));
+
+            if (model is null)
+            {
+                throw new InvalidDataException("Failed to load words from file");
+            }
+
+            List<Word> words = [];
+            foreach (string entry in model.Words)
+            {
+                if (entry.Length != Word.DefaultLength)
+                    continue;
+                string normalizedEntry = RemoveAccents(entry);
+                var word = new Word(
+                    value: normalizedEntry,
+                    displayText: model.AccentMapping.GetValueOrDefault(normalizedEntry)
+                );
+                words.Add(word);
+            }
+
+            return words;
         }
         catch (ArgumentNullException e)
         {
@@ -46,5 +61,19 @@ public class WordLoader : IWordLoader
                 innerException: e
             );
         }
+    }
+
+    private static string RemoveAccents(string text)
+    {
+        var normalized = text.Normalize(NormalizationForm.FormD);
+        var sb = new StringBuilder();
+
+        foreach (var c in normalized)
+        {
+            if (CharUnicodeInfo.GetUnicodeCategory(c) != UnicodeCategory.NonSpacingMark)
+                sb.Append(c);
+        }
+
+        return sb.ToString().Normalize(NormalizationForm.FormC);
     }
 }

@@ -1,5 +1,6 @@
 using Termo.Api.Dtos;
 using Termo.Api.Models;
+using Termo.Api.Repositories;
 
 namespace Termo.Api.Guesses;
 

@@ -46,6 +46,19 @@ public class GuessEvaluatorTests
         ]
     );
 
+    private static readonly GuessEvaluationCase VineoVineo = new(
+        Target: new Word(value: "vineo", displayText: "VÍNEO"),
+        Guess: new Word(value: "vineo"),
+        ExpectedStates:
+        [
+            LetterState.Correct,
+            LetterState.Correct,
+            LetterState.Correct,
+            LetterState.Correct,
+            LetterState.Correct,
+        ]
+    );
+
     [Test]
     public void Evaluate_WithAllLettersCorrect_ReturnsAllCorrect()
     {
@@ -107,6 +120,7 @@ public class GuessEvaluatorTests
         yield return PlacaCasal;
         yield return CasalPausa;
         yield return FogaoPavao;
+        yield return VineoVineo;
     }
 
     public record GuessEvaluationCase(

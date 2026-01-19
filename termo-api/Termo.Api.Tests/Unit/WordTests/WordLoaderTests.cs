@@ -30,12 +30,19 @@ public class WordLoaderTests
         var loader = new WordLoader(filePath: JsonFilePath, fileSystem: fileSystem);
 
         // Act
-        Word word = loader.LoadWords().Single();
+        var words = loader.LoadWords().ToList();
+        words.Count.ShouldBe(2);
+        Word firstWord = words[0];
+        Word secondWord = words[1];
 
         // Assert
-        word.Value.ShouldBe("fogao"); // Always in lowercase
-        word.DisplayText.ShouldBe("FOGÃO"); // Converted to uppercase
-        word.Length.ShouldBe(5);
+        firstWord.Value.ShouldBe("fogao"); // Always in lowercase
+        firstWord.DisplayText.ShouldBe("FOGÃO"); // Converted to uppercase
+        firstWord.Length.ShouldBe(5);
+
+        secondWord.Value.ShouldBe("vineo"); // Always in lowercase
+        secondWord.DisplayText.ShouldBe("VÍNEO"); // Converted to uppercase
+        secondWord.Length.ShouldBe(5);
     }
 
     [Test]
@@ -63,15 +70,15 @@ public class WordLoaderTests
     {
         public const string Valid = """
             {
-                "Words": ["fogao"],
-                "AccentMapping": { "fogao": "fogão" }
+                "Words": ["fogão", "víneo"],
+                "AccentMapping": { "fogao": "fogão", "vineo": "víneo" }
             }
             """;
 
         public const string InvalidKeys = """
             {
-                "words": ["fogao"],
-                "accentMapping": { "fogao": "fogão" }
+                "words": ["fogão"],
+                "accent_mapping": { "fogao": "fogão" }
             }
             """;
 
