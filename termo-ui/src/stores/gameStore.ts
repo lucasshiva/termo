@@ -47,5 +47,14 @@ export const useGameStore = defineStore('game', () => {
     localStorage.setItem(localStorageGameIdKey, game.value.id)
   }
 
-  return { game, loading, error, createGame }
+  async function submitGuess(id: string, guess: string) {
+    try {
+      const updatedGame = await api.submitGuess(id, guess)
+      game.value = updatedGame
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  return { game, loading, error, createGame, submitGuess }
 })

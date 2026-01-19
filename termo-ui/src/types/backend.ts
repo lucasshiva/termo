@@ -33,3 +33,7 @@ export enum GameState {
   WON = 'Won',
   LOST = 'Lost',
 }
+
+export interface SubmitGuessRequest {
+  guess: string
+}

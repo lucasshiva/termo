@@ -20,6 +20,13 @@ export const useBoardStore = defineStore('board', () => {
     return activeTile?.value?.number
   })
 
+  const currentGuess = computed<string>(() => {
+    const row = activeRow.value
+    if (!row) return ''
+
+    return row.tiles.map((tile) => tile.letter).join('')
+  })
+
   function initFromGame(game: GameDto) {
     if (game.guesses.length === 0) {
       rows.value = createDefaultRows(game.maxGuesses, game.word.length)
@@ -29,6 +36,7 @@ export const useBoardStore = defineStore('board', () => {
 
     rows.value = Array.from({ length: game.maxGuesses }, (_, rowIndex): Row => {
       const guess = game.guesses[rowIndex]
+      console.log(guess)
 
       // Submitted row
       if (guess) {
@@ -37,7 +45,7 @@ export const useBoardStore = defineStore('board', () => {
           number: rowIndex + 1,
           tiles: guess.evaluations.map((e, colIndex) => ({
             letter: e.letter,
-            letterState: e.state,
+            state: e.state,
             selected: false,
             number: colIndex + 1,
           })),
@@ -51,7 +59,7 @@ export const useBoardStore = defineStore('board', () => {
           number: rowIndex + 1,
           tiles: Array.from({ length: game.word.length }, (_, colIndex) => ({
             letter: '',
-            letterState: undefined,
+            state: undefined,
             selected: colIndex === 0,
             number: colIndex + 1,
           })),
@@ -64,7 +72,7 @@ export const useBoardStore = defineStore('board', () => {
         number: rowIndex + 1,
         tiles: Array.from({ length: game.word.length }, (_, colIndex) => ({
           letter: '',
-          letterState: undefined,
+          state: undefined,
           selected: false,
           number: colIndex + 1,
         })),
@@ -79,7 +87,7 @@ export const useBoardStore = defineStore('board', () => {
       number: rowIndex + 1,
       tiles: Array.from({ length: columnCount }, (_, colIndex) => ({
         letter: '',
-        letterState: undefined,
+        state: undefined,
         selected: rowIndex === 0 && colIndex === 0,
         number: colIndex + 1,
       })),
@@ -106,20 +114,15 @@ export const useBoardStore = defineStore('board', () => {
   }
 
   function inputLetter(letter: string) {
-    if (letter === 'DELETE') {
-      deleteLetter()
-      return
-    }
-
-    if (letter === 'ENTER') {
-      // TODO: submit guess
-      return
-    }
-
+    if (letter === 'ENTER' || letter === 'DELETE') return
     const row = activeRow.value
     const tile = activeTile.value
     if (!row || !tile) return
-    if (tile.letter) return // Prevent overwrite
+
+    // Prevent overwrite
+    if (tile.letter) {
+      selectNextTile()
+    }
 
     tile.letter = letter.toLocaleUpperCase()
     selectNextTile()
@@ -139,6 +142,7 @@ export const useBoardStore = defineStore('board', () => {
     rowsLoaded,
     activeRow,
     activeTile,
+    currentGuess,
     initFromGame,
     selectNextTile,
     selectPreviousTile,

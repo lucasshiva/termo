@@ -1,4 +1,4 @@
-import type { GameDto } from '@/types/backend'
+import type { GameDto, SubmitGuessRequest } from '@/types/backend'
 
 // composables/useApi.ts
 export function useApi() {
@@ -21,5 +21,16 @@ export function useApi() {
     return json
   }
 
-  return { createGame, getGame }
+  async function submitGuess(id: string, guess: string): Promise<GameDto> {
+    const response = await fetch(`${baseURL}/games/${id}/guess`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ guess } satisfies SubmitGuessRequest),
+    })
+    if (!response.ok) throw new Error('Failed to submit guess')
+
+    return response.json()
+  }
+
+  return { createGame, getGame, submitGuess }
 }

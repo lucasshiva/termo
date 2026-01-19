@@ -1,7 +1,10 @@
 <script lang="ts" setup>
-import Board from './Board.vue';
-import GameHeader from './GameHeader.vue';
-import Keyboard from './Keyboard.vue';
+import { useGameStore } from '@/stores/gameStore'
+import Board from './Board.vue'
+import GameHeader from './GameHeader.vue'
+import Keyboard from './Keyboard.vue'
+
+const gameStore = useGameStore()
 </script>
 
 <template>
@@ -13,7 +16,9 @@ import Keyboard from './Keyboard.vue';
         class="min-h-0 grid overflow-hidden grid-rows-[1fr_auto_1fr_auto] place-items-center mt-4"
       >
         <!-- top spacer -->
-        <div />
+
+        <!-- Display word for debug purposes -->
+        <div>WORD: {{ gameStore.game!.word.displayText }}</div>
 
         <Board />
 
