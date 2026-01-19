@@ -24,6 +24,7 @@ export const useBoardStore = defineStore('board', () => {
   const rowsLoaded = computed(() => rows.value.length > 0)
   const activeTileIndex = ref(0)
   const activeRowLetters = ref<Map<number, string>>(new Map())
+  const currentLetter = computed(() => activeRowLetters.value.get(activeTileIndex.value))
 
   const activeTile = computed<Tile | undefined>(() => {
     return activeRow.value?.tiles.find((tile) => tile.selected)
@@ -127,8 +128,7 @@ export const useBoardStore = defineStore('board', () => {
     }
 
     // Prevent overwrite
-    const currentLetter = activeRowLetters.value.get(activeTileIndex.value)
-    if (currentLetter === letter) {
+    if (currentLetter.value === letter) {
       selectNextTile()
     }
 
@@ -137,7 +137,25 @@ export const useBoardStore = defineStore('board', () => {
   }
 
   function deleteLetter() {
-    activeRowLetters.value.delete(activeTileIndex.value)
+    const shouldDeleteCurrent = currentLetter.value != undefined
+    if (shouldDeleteCurrent) {
+      activeRowLetters.value.delete(activeTileIndex.value)
+      selectPreviousTile()
+      return
+    }
+
+    // If the current tile is empty but the previous tile is not, we delete the letter from
+    // the previous tile.
+    const previousTileIndex = activeTileIndex.value - 1
+    const previousTileLetter = activeRowLetters.value.get(previousTileIndex)
+    const canDeletePrevious = previousTileIndex >= 0 && previousTileLetter !== undefined
+
+    if (canDeletePrevious) {
+      selectPreviousTile()
+      activeRowLetters.value.delete(activeTileIndex.value)
+      return
+    }
+
     selectPreviousTile()
   }
 
