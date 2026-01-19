@@ -9,10 +9,6 @@ const boardStore = useBoardStore()
 
 onMounted(async () => {
   await gameStore.createGame()
-  if (gameStore.game !== undefined) {
-    boardStore.initFromGame(gameStore.game)
-    console.log('Created board with rows: ', boardStore.rows)
-  }
 })
 </script>
 

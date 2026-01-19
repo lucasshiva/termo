@@ -1,75 +1,72 @@
-import type { GameDto } from '@/types/backend'
+import { GameState, type GameDto } from '@/types/backend'
 import { RowState } from '@/types/rowState'
 import type { Row, Tile } from '@/types/tile'
-import { defineStore } from 'pinia'
+import { defineStore, storeToRefs } from 'pinia'
 import { computed, ref } from 'vue'
+import { useGameStore } from './gameStore'
 
 export const useBoardStore = defineStore('board', () => {
-  const rows = ref<Row[]>([])
-  const rowsLoaded = ref(false)
+  const gameStore = useGameStore()
+  const { game } = storeToRefs(gameStore)
 
-  const activeRow = computed<Row | undefined>(() => {
-    return rows.value.find((row) => row.state === RowState.ACTIVE)
+  const submittedRows = computed<Row[]>(() => createSubmittedRows(game.value!))
+  const emptyRows = computed<Row[]>(() => createEmptyRows(game.value!))
+  const activeRow = computed<Row | undefined>(() => createActiveRow(game.value!))
+
+  const rows = computed<Row[]>(() => {
+    if (activeRow.value) {
+      return [...submittedRows.value, activeRow.value, ...emptyRows.value]
+    }
+
+    return [...submittedRows.value, ...emptyRows.value]
   })
+
+  const rowsLoaded = computed(() => rows.value.length > 0)
+  const activeTileIndex = ref(0)
+  const activeRowLetters = ref<Map<number, string>>(new Map())
 
   const activeTile = computed<Tile | undefined>(() => {
     return activeRow.value?.tiles.find((tile) => tile.selected)
-  })
-
-  const activeTileNumber = computed<number | undefined>(() => {
-    return activeTile?.value?.number
   })
 
   const currentGuess = computed<string>(() => {
     const row = activeRow.value
     if (!row) return ''
 
-    return row.tiles.map((tile) => tile.letter).join('')
+    return row.tiles
+      .map((tile) => tile.letter)
+      .join('')
+      .trim()
+      .normalize()
   })
 
-  function initFromGame(game: GameDto) {
-    if (game.guesses.length === 0) {
-      rows.value = createDefaultRows(game.maxGuesses, game.word.length)
-      rowsLoaded.value = true
-      return
+  function createSubmittedRows(game: GameDto): Row[] {
+    return game.guesses.map((guess, index) => {
+      return {
+        state: RowState.SUBMITTED,
+        number: index + 1,
+        tiles: guess.evaluations.map((e, colIndex) => ({
+          letter: e.letter,
+          state: e.state,
+          selected: false,
+          number: colIndex + 1,
+        })),
+      }
+    })
+  }
+
+  function createEmptyRows(game: GameDto): Row[] {
+    const activeRowIndex = submittedRows.value.length
+    let emptyRowIndex = activeRowIndex
+    if (game.state === GameState.IN_PROGRESS) {
+      emptyRowIndex++
     }
 
-    rows.value = Array.from({ length: game.maxGuesses }, (_, rowIndex): Row => {
-      const guess = game.guesses[rowIndex]
-      console.log(guess)
-
-      // Submitted row
-      if (guess) {
-        return {
-          state: RowState.SUBMITTED,
-          number: rowIndex + 1,
-          tiles: guess.evaluations.map((e, colIndex) => ({
-            letter: e.letter,
-            state: e.state,
-            selected: false,
-            number: colIndex + 1,
-          })),
-        }
-      }
-
-      // Active row (first row after last guess)
-      if (rowIndex === game.guesses.length) {
-        return {
-          state: RowState.ACTIVE,
-          number: rowIndex + 1,
-          tiles: Array.from({ length: game.word.length }, (_, colIndex) => ({
-            letter: '',
-            state: undefined,
-            selected: colIndex === 0,
-            number: colIndex + 1,
-          })),
-        }
-      }
-
-      // Inactive row
-      return {
+    const rows: Row[] = []
+    while (emptyRowIndex <= game.word.length) {
+      const row = {
         state: RowState.INACTIVE,
-        number: rowIndex + 1,
+        number: emptyRowIndex,
         tiles: Array.from({ length: game.word.length }, (_, colIndex) => ({
           letter: '',
           state: undefined,
@@ -77,64 +74,82 @@ export const useBoardStore = defineStore('board', () => {
           number: colIndex + 1,
         })),
       }
-    })
-    rowsLoaded.value = true
+      rows.push(row)
+      emptyRowIndex = emptyRowIndex + 1
+    }
+
+    return rows
   }
 
-  function createDefaultRows(rowCount: number, columnCount: number): Row[] {
-    return Array.from({ length: rowCount }, (_, rowIndex) => ({
-      state: rowIndex === 0 ? RowState.ACTIVE : RowState.INACTIVE,
-      number: rowIndex + 1,
-      tiles: Array.from({ length: columnCount }, (_, colIndex) => ({
-        letter: '',
+  function createActiveRow(game: GameDto): Row | undefined {
+    if (game.state !== GameState.IN_PROGRESS) {
+      return
+    }
+
+    const activeRowIndex = submittedRows.value.length
+    return {
+      state: RowState.ACTIVE,
+      number: activeRowIndex + 1,
+      tiles: Array.from({ length: game.word.length }, (_, colIndex) => ({
+        letter: getLetterForTileIndex(colIndex),
         state: undefined,
-        selected: rowIndex === 0 && colIndex === 0,
+        selected: colIndex === activeTileIndex.value,
         number: colIndex + 1,
       })),
-    }))
+    }
+  }
+
+  function getLetterForTileIndex(tileIndex: number): string {
+    return activeRowLetters.value.get(tileIndex) ?? ''
   }
 
   function setActiveTile(tileNumber: number) {
-    const row = activeRow.value
-    if (!row) return
-
-    row.tiles.forEach((tile, i) => {
-      tile.selected = i + 1 === tileNumber
-    })
+    activeTileIndex.value = tileNumber
   }
 
   function selectNextTile() {
-    if (!activeTileNumber.value) return
-    setActiveTile(Math.min(5, activeTileNumber.value + 1))
+    setActiveTile(Math.min(game.value!.word.length - 1, activeTileIndex.value + 1))
   }
 
   function selectPreviousTile() {
-    if (!activeTileNumber.value) return
-    setActiveTile(Math.max(1, activeTileNumber.value - 1))
+    setActiveTile(Math.max(0, activeTileIndex.value - 1))
   }
 
-  function inputLetter(letter: string) {
-    if (letter === 'ENTER' || letter === 'DELETE') return
-    const row = activeRow.value
-    const tile = activeTile.value
-    if (!row || !tile) return
+  async function inputLetter(letter: string) {
+    if (letter === 'ENTER') {
+      await submitGuess()
+      return
+    }
+
+    if (letter === 'DELETE') {
+      deleteLetter()
+      return
+    }
 
     // Prevent overwrite
-    if (tile.letter) {
+    const currentLetter = activeRowLetters.value.get(activeTileIndex.value)
+    if (currentLetter === letter) {
       selectNextTile()
     }
 
-    tile.letter = letter.toLocaleUpperCase()
+    activeRowLetters.value.set(activeTileIndex.value, letter.toLocaleUpperCase())
     selectNextTile()
   }
 
   function deleteLetter() {
-    const row = activeRow.value
-    const tile = activeTile.value
-    if (!row || !tile) return
-
-    tile.letter = ''
+    activeRowLetters.value.delete(activeTileIndex.value)
     selectPreviousTile()
+  }
+
+  async function submitGuess() {
+    if (currentGuess.value.length !== 5) {
+      console.error("Can't submit guesses of incorrect length.")
+      return
+    }
+
+    console.log('Submitting guess: ', currentGuess.value)
+    await gameStore.submitGuess(currentGuess.value)
+    activeRowLetters.value.clear()
   }
 
   return {
@@ -143,7 +158,6 @@ export const useBoardStore = defineStore('board', () => {
     activeRow,
     activeTile,
     currentGuess,
-    initFromGame,
     selectNextTile,
     selectPreviousTile,
     inputLetter,
