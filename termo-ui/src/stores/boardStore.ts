@@ -112,6 +112,34 @@ export const useBoardStore = defineStore('board', () => {
     setActiveTile(Math.min(game.value!.word.length - 1, activeTileIndex.value + 1))
   }
 
+  function selectNextEmptyTile() {
+    // No empty tiles, keep selection as is
+    const hasEmptyTiles = currentGuess.value.length < 5
+    if (!hasEmptyTiles) {
+      return
+    }
+
+    const length = game.value!.word.length
+    const nextIndexes = getIndexesAfter(activeTileIndex.value, length)
+
+    for (const index of nextIndexes) {
+      const isEmpty = activeRowLetters.value.get(index) === undefined
+      if (isEmpty) {
+        setActiveTile(index)
+        return
+      }
+    }
+  }
+
+  function getIndexesAfter(start: number, length: number): number[] {
+    if (length <= 1) return []
+
+    return Array.from({ length: length - 1 }, (_, i) => {
+      const idx = start + 1 + i
+      return idx >= length ? idx - length : idx
+    })
+  }
+
   function selectPreviousTile() {
     setActiveTile(Math.max(0, activeTileIndex.value - 1))
   }
@@ -127,13 +155,8 @@ export const useBoardStore = defineStore('board', () => {
       return
     }
 
-    // Prevent overwrite
-    if (currentLetter.value === letter) {
-      selectNextTile()
-    }
-
     activeRowLetters.value.set(activeTileIndex.value, letter.toLocaleUpperCase())
-    selectNextTile()
+    selectNextEmptyTile()
   }
 
   function deleteLetter() {
