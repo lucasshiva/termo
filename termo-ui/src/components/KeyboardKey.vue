@@ -9,7 +9,7 @@ const isEnter = computed(() => props.letter === 'ENTER')
 
 <template>
   <div
-    class="bg-background rounded-sm font-medium p-4 flex items-center justify-center"
+    class="bg-background rounded-sm font-medium p-4 flex items-center justify-center cursor-pointer hover:bg-primary"
     :class="{
       'px-10': isEnter,
       'ml-2': isSpecial,

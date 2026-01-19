@@ -1,23 +1,32 @@
 <script lang="ts" setup>
-import { useGameStore } from '@/stores/gameStore'
+import { useBoardStore } from '@/stores/boardStore'
+import { onMounted, onUnmounted } from 'vue'
+import BoardTile from './BoardTile.vue'
 
-const gameStore = useGameStore()
-const game = gameStore.game!
-const rows = game.maxGuesses
-const columns = game.word.length
+const boardStore = useBoardStore()
+
+function onKeyDown(e: KeyboardEvent) {
+  if (e.key === 'ArrowLeft') {
+    boardStore.selectPreviousTile()
+  }
+  if (e.key === 'ArrowRight') {
+    boardStore.selectNextTile()
+  }
+}
+
+onMounted(() => {
+  window.addEventListener('keydown', onKeyDown)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('keydown', onKeyDown)
+})
 </script>
 
 <template>
   <div id="board" class="space-y-1">
-    <div v-for="row in rows" :key="row" class="grid gap-1 grid-cols-5">
-      <div
-        v-for="column in columns"
-        :key="column"
-        class="rounded-sm border-2 bg-border flex items-center justify-center"
-        style="width: var(--tile); height: var(--tile); font-size: var(--font)"
-      >
-        <p class="font-bold">A</p>
-      </div>
+    <div v-for="row in boardStore.rows" class="grid gap-1 grid-cols-5">
+      <BoardTile v-for="tile in row.tiles" :tile="tile" :row="row" />
     </div>
   </div>
 </template>

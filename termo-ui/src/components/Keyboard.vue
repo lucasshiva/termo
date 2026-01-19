@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { useBoardStore } from '@/stores/boardStore';
 import KeyboardKey from './KeyboardKey.vue';
 
 const keys = [
@@ -6,6 +7,7 @@ const keys = [
   ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'DELETE'],
   ['Z', 'X', 'C', 'V', 'B', 'N', 'M', 'ENTER'],
 ]
+const boardStore = useBoardStore()
 </script>
 
 <template>
@@ -15,7 +17,7 @@ const keys = [
       :key="index"
       class="flex gap-0.5 sm:gap-1 m-0.5 sm:m-1 items-center justify-center"
     >
-      <KeyboardKey v-for="letter in row" :letter="letter" />
+      <KeyboardKey v-for="letter in row" :letter="letter" @click="boardStore.inputLetter(letter)" />
     </div>
   </div>
 </template>
