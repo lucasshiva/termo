@@ -219,6 +219,7 @@ export const useBoardStore = defineStore('board', () => {
     console.log('Submitting guess: ', currentGuess.value)
     await gameStore.submitGuess(currentGuess.value)
     activeRowLetters.value.clear()
+    activeTileIndex.value = 0
   }
 
   function getStateForLetter(letter: string): LetterState | undefined {
