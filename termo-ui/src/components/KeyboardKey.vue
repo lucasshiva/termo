@@ -6,8 +6,6 @@ import { computed } from 'vue';
 const props = defineProps<{ letter: string; state?: LetterState }>()
 const isSpecial = computed(() => props.letter === 'ENTER' || props.letter === 'DELETE')
 const isEnter = computed(() => props.letter === 'ENTER')
-
-console.log(`Key ${props.letter} has a state of ${props.state}`)
 </script>
 
 <template>
