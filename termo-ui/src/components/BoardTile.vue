@@ -15,8 +15,8 @@ const props = defineProps<{
     style="width: var(--tile); height: var(--tile); font-size: var(--font)"
     :class="{
       'border-2': row.state === RowState.INACTIVE,
-      'bg-none border-3 border-ring': row.state === RowState.ACTIVE,
-      'border-b-12': tile.selected && row.state === RowState.ACTIVE,
+      'bg-none border-5 border-ring': row.state === RowState.ACTIVE,
+      'border-b-14': tile.selected && row.state === RowState.ACTIVE,
       'bg-background': row.state === RowState.SUBMITTED,
       'bg-green-600': tile.state === LetterState.CORRECT,
       'bg-yellow-500': tile.state === LetterState.PRESENT,
