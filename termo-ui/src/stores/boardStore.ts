@@ -1,4 +1,4 @@
-import { GameState, type GameDto } from '@/types/backend'
+import { GameState, LetterState, type GameDto } from '@/types/backend'
 import { RowState } from '@/types/rowState'
 import type { Row, Tile } from '@/types/tile'
 import { defineStore, storeToRefs } from 'pinia'
@@ -19,6 +19,34 @@ export const useBoardStore = defineStore('board', () => {
     }
 
     return [...submittedRows.value, ...emptyRows.value]
+  })
+  const letterStates = computed<Map<string, LetterState>>(() => {
+    if (!game.value) return new Map()
+
+    const map = new Map<string, LetterState>()
+
+    for (const guess of game.value.guesses) {
+      for (const evaluation of guess.evaluations) {
+        const letter = evaluation.letter.toLocaleUpperCase()
+        const existing = map.get(letter)
+
+        if (evaluation.state === LetterState.CORRECT) {
+          map.set(letter, LetterState.CORRECT)
+          continue
+        }
+
+        if (evaluation.state === LetterState.PRESENT && existing !== LetterState.CORRECT) {
+          map.set(letter, LetterState.PRESENT)
+          continue
+        }
+
+        if (!existing) {
+          map.set(letter, LetterState.ABSENT)
+        }
+      }
+    }
+
+    return map
   })
 
   const rowsLoaded = computed(() => rows.value.length > 0)
@@ -193,6 +221,10 @@ export const useBoardStore = defineStore('board', () => {
     activeRowLetters.value.clear()
   }
 
+  function getStateForLetter(letter: string): LetterState | undefined {
+    return letterStates.value.get(letter)
+  }
+
   return {
     rows,
     rowsLoaded,
@@ -203,5 +235,6 @@ export const useBoardStore = defineStore('board', () => {
     selectPreviousTile,
     inputLetter,
     deleteLetter,
+    getStateForLetter,
   }
 })
