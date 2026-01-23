@@ -10,18 +10,17 @@ const props = defineProps<{
 </script>
 
 <template>
-  <div
-    class="rounded-sm flex items-center justify-center transition-[border,transform] duration-75 ease-out"
-    style="width: var(--tile); height: var(--tile); font-size: var(--font)"
+  <span
+    class="inline-flex items-center justify-center rounded-sm transition-[border,transform] duration-75 ease-out font-bold"
     :class="{
-      'border-2': row.state === RowState.INACTIVE,
+      'border-2': row.state === RowState.INACTIVE && tile.state !== LetterState.ABSENT,
       'bg-none border-5 border-ring': row.state === RowState.ACTIVE,
       'border-b-14': tile.selected && row.state === RowState.ACTIVE,
-      'bg-background': row.state === RowState.SUBMITTED,
+      'bg-background': row.state === RowState.SUBMITTED || tile.state === LetterState.ABSENT,
       'bg-green-600': tile.state === LetterState.CORRECT,
       'bg-yellow-500': tile.state === LetterState.PRESENT,
     }"
   >
-    <p class="font-bold">{{ tile.letter.toLocaleUpperCase() }}</p>
-  </div>
+    {{ tile.letter.toLocaleUpperCase() }}
+  </span>
 </template>

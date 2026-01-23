@@ -26,7 +26,7 @@ onUnmounted(() => {
 <template>
   <div id="board" class="space-y-1">
     <div v-for="row in boardStore.rows" class="grid gap-1 grid-cols-5">
-      <BoardTile v-for="tile in row.tiles" :tile="tile" :row="row" />
+      <BoardTile v-for="tile in row.tiles" :tile="tile" :row="row" class="w-[8.5vh] h-[8.5vh] text-[5vh] flex items-center justify-center" />
     </div>
   </div>
 </template>
