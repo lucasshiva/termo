@@ -1,10 +1,14 @@
 <script lang="ts" setup>
 import { useGameStore } from '@/stores/gameStore'
+import { Eye, EyeOff } from 'lucide-vue-next'
+import { ref } from 'vue'
 import Board from './Board.vue'
 import GameHeader from './GameHeader.vue'
 import Keyboard from './Keyboard.vue'
+import { Button } from './ui/button'
 
 const gameStore = useGameStore()
+const showWord = ref(false)
 </script>
 
 <template>
@@ -18,7 +22,14 @@ const gameStore = useGameStore()
         <!-- top spacer -->
 
         <!-- Display word for debug purposes -->
-        <div>WORD: {{ gameStore.game!.word.displayText }}</div>
+        <div class="flex items-center gap-2">
+          <div v-if="showWord">WORD: {{ gameStore.game!.word.displayText }}</div>
+
+          <Button variant="outline" @click="showWord = !showWord">
+            <Eye v-if="!showWord" />
+            <EyeOff v-else />
+          </Button>
+        </div>
 
         <Board />
 
