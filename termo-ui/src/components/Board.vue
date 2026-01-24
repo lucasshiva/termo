@@ -8,11 +8,29 @@ import BoardTile from './BoardTile.vue'
 const boardStore = useBoardStore()
 
 function onKeyDown(e: KeyboardEvent) {
-  if (e.key === 'ArrowLeft') {
+  const key = e.key
+
+  if (key === 'ArrowLeft') {
     boardStore.selectPreviousTile()
   }
-  if (e.key === 'ArrowRight') {
+  if (key === 'ArrowRight') {
     boardStore.selectNextTile()
+  }
+
+  if (key === 'Enter') {
+    boardStore.inputLetter('ENTER')
+    return
+  }
+
+  if (key === 'Backspace') {
+    boardStore.inputLetter('DELETE')
+    return
+  }
+
+  const normalized = key.normalize()
+
+  if (/^[a-zA-Z]$/.test(normalized)) {
+    boardStore.inputLetter(normalized)
   }
 }
 
