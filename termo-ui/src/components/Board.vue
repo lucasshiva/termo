@@ -60,7 +60,7 @@ onUnmounted(() => {
         :tile="tile"
         :row="row"
         @click="selectTile(row, tile)"
-        class="w-[8.5vh] h-[8.5vh] text-[5vh] flex items-center justify-center"
+        class="w-[8.5vh] h-[8.5vh] text-[5vh]"
       />
     </div>
   </div>

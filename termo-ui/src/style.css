@@ -118,3 +118,13 @@
     @apply bg-background text-foreground;
   }
 }
+
+.letter {
+  font-weight: 600;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  line-height: 1em;
+  text-transform: uppercase;
+  border-radius: var(--radius-sm);
+}
