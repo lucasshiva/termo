@@ -81,6 +81,7 @@ public class SubmitGuessUseCaseTests
             .Guesses[0]
             .Evaluations.Select(e => e.State)
             .ShouldAllBe(s => s == LetterState.Correct);
+        gameDto.Guesses[0].Evaluations[1].Display.ShouldBe('Í');
         gameDto.State.ShouldBe(GameState.Won);
     }
 }

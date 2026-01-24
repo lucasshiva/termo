@@ -33,7 +33,11 @@ public class GuessEvaluator : IGuessEvaluator
             if (g != t)
                 continue;
 
-            evaluations[i] = new LetterEvaluation(Letter: g, State: LetterState.Correct);
+            evaluations[i] = new LetterEvaluation(
+                Letter: g,
+                Display: target.DisplayText[i],
+                State: LetterState.Correct
+            );
             remaining[g]--;
         }
 
@@ -44,15 +48,24 @@ public class GuessEvaluator : IGuessEvaluator
                 continue;
 
             char g = guess.Value[i];
+            char t = target.Value[i];
 
             if (remaining.TryGetValue(key: g, value: out int count) && count > 0)
             {
-                evaluations[i] = new LetterEvaluation(Letter: g, State: LetterState.Present);
+                evaluations[i] = new LetterEvaluation(
+                    Letter: g,
+                    Display: target.DisplayText[i],
+                    State: LetterState.Present
+                );
                 remaining[g]--;
             }
             else
             {
-                evaluations[i] = new LetterEvaluation(Letter: g, State: LetterState.Absent);
+                evaluations[i] = new LetterEvaluation(
+                    Letter: g,
+                    Display: target.DisplayText[i],
+                    State: LetterState.Absent
+                );
             }
         }
 

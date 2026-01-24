@@ -75,7 +75,8 @@ export const useBoardStore = defineStore('board', () => {
         state: RowState.SUBMITTED,
         number: index + 1,
         tiles: guess.evaluations.map((e, colIndex) => ({
-          letter: e.letter,
+          // The letter inside the tile in a submitted guess should always be the display letter.
+          letter: e.state === LetterState.CORRECT ? e.display : e.letter,
           state: e.state,
           selected: false,
           number: colIndex + 1,

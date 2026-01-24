@@ -19,6 +19,7 @@ export interface GuessDto {
 
 export interface LetterEvaluation {
   letter: string
+  display: string
   state: LetterState
 }
 
