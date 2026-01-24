@@ -132,8 +132,8 @@ export const useBoardStore = defineStore('board', () => {
     return activeRowLetters.value.get(tileIndex) ?? ''
   }
 
-  function setActiveTile(tileNumber: number) {
-    activeTileIndex.value = tileNumber
+  function setActiveTile(tileIndex: number) {
+    activeTileIndex.value = tileIndex
   }
 
   function selectNextTile() {
@@ -234,6 +234,7 @@ export const useBoardStore = defineStore('board', () => {
     currentGuess,
     selectNextTile,
     selectPreviousTile,
+    setActiveTile,
     inputLetter,
     deleteLetter,
     getStateForLetter,

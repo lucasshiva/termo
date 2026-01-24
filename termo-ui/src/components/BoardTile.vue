@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import { LetterState } from '@/types/backend';
-import { RowState } from '@/types/rowState';
-import type { Row, Tile } from '@/types/tile';
+import { LetterState } from '@/types/backend'
+import { RowState } from '@/types/rowState'
+import type { Row, Tile } from '@/types/tile'
 
 const props = defineProps<{
   tile: Tile
@@ -14,7 +14,7 @@ const props = defineProps<{
     class="inline-flex items-center justify-center rounded-sm transition-[border,transform] duration-75 ease-out font-bold"
     :class="{
       'border-2': row.state === RowState.INACTIVE && tile.state !== LetterState.ABSENT,
-      'bg-none border-5 border-ring': row.state === RowState.ACTIVE,
+      'bg-none border-5 border-ring cursor-pointer': row.state === RowState.ACTIVE,
       'border-b-14': tile.selected && row.state === RowState.ACTIVE,
       'bg-background': row.state === RowState.SUBMITTED || tile.state === LetterState.ABSENT,
       'bg-green-600': tile.state === LetterState.CORRECT,
