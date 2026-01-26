@@ -9,6 +9,7 @@ const boardStore = useBoardStore()
 
 onMounted(async () => {
   await gameStore.createGame()
+  boardStore.initRowsFromGame(gameStore.game!)
 })
 </script>
 

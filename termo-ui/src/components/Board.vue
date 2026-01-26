@@ -59,6 +59,7 @@ onUnmounted(() => {
         v-for="tile in row.tiles"
         :tile="tile"
         :row="row"
+        :reveal="boardStore.isRevealing"
         @click="selectTile(row, tile)"
         class="w-[8.5vh] h-[8.5vh] text-[5vh]"
       />

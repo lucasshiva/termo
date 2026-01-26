@@ -1,5 +1,5 @@
 import { useApi } from '@/composables/useApi'
-import { GameState, type GameDto } from '@/types/backend'
+import { GameState, type GameDto, type GuessDto } from '@/types/backend'
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
@@ -47,13 +47,10 @@ export const useGameStore = defineStore('game', () => {
     localStorage.setItem(localStorageGameIdKey, game.value.id)
   }
 
-  async function submitGuess(guess: string) {
-    try {
-      const updatedGame = await api.submitGuess(game.value!.id, guess)
-      game.value = updatedGame
-    } catch (error) {
-      console.error(error)
-    }
+  async function submitGuess(guess: string): Promise<GuessDto> {
+    const updatedGame = await api.submitGuess(game.value!.id, guess)
+    game.value = updatedGame
+    return updatedGame.guesses[updatedGame.guesses.length - 1]!
   }
 
   return { game, loading, error, createGame, submitGuess }
