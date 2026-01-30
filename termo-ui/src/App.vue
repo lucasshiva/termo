@@ -14,7 +14,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="h-full dark">
+  <div class="h-full dark bg-secondary text-foreground">
     <div
       v-if="gameStore.loading && !boardStore.rowsLoaded"
       class="flex items-center justify-center h-full"
