@@ -16,12 +16,12 @@ onMounted(async () => {
 <template>
   <div class="h-full dark">
     <div
-      v-if="gameStore.loading || !boardStore.rowsLoaded"
-      class="flex items-center justify-center"
+      v-if="gameStore.loading && !boardStore.rowsLoaded"
+      class="flex items-center justify-center h-full"
     >
       Loading...
     </div>
-    <div v-else-if="gameStore.error" class="flex items-center justify-center">
+    <div v-else-if="gameStore.error" class="flex items-center justify-center h-full">
       Error creating game: {{ gameStore.error.message }}
     </div>
     <GameScreen v-else class="h-full" />
