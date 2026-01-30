@@ -1,15 +1,23 @@
 <script setup lang="ts">
 import { useGameStore } from '@/stores/gameStore'
+import { LucideCircleX } from 'lucide-vue-next'
 import { onMounted } from 'vue'
 import GameScreen from './components/GameScreen.vue'
+import { Button } from './components/ui/button'
+import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from './components/ui/empty'
+import EmptyContent from './components/ui/empty/EmptyContent.vue'
 import { useBoardStore } from './stores/boardStore'
 
 const gameStore = useGameStore()
 const boardStore = useBoardStore()
 
-onMounted(async () => {
+async function init() {
   await gameStore.createGame()
   boardStore.initRowsFromGame(gameStore.game!)
+}
+
+onMounted(async () => {
+  await init()
 })
 </script>
 
@@ -21,9 +29,21 @@ onMounted(async () => {
     >
       Loading...
     </div>
-    <div v-else-if="gameStore.error" class="flex items-center justify-center h-full">
-      Error creating game: {{ gameStore.error.message }}
-    </div>
+
+    <Empty v-else-if="gameStore.error" class="h-full">
+      <EmptyHeader>
+        <EmptyMedia variant="icon" class="bg-background">
+          <LucideCircleX />
+        </EmptyMedia>
+        <EmptyTitle>Error loading/creating game</EmptyTitle>
+        <EmptyDescription>
+          {{ gameStore.error.message }}
+        </EmptyDescription>
+      </EmptyHeader>
+      <EmptyContent>
+        <Button variant="default" class="bg-background" @click="init()">Try again</Button>
+      </EmptyContent>
+    </Empty>
     <GameScreen v-else class="h-full" />
   </div>
 </template>

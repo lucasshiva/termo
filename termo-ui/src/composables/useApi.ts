@@ -9,7 +9,7 @@ export function useApi() {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
     })
-    if (!response.ok) throw new Error('Failed to create game')
+    if (!response.ok) throw new Error('Failed to create game: server might be down')
     return response.json()
   }
 
