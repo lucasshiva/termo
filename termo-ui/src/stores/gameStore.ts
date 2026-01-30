@@ -17,6 +17,7 @@ export const useGameStore = defineStore('game', () => {
       if (savedGameId === null) {
         console.log('No saved game ID found. Creating new game..')
         await createNewGame()
+        error.value = null
         return
       }
 
@@ -26,6 +27,7 @@ export const useGameStore = defineStore('game', () => {
         if (savedGame.state !== GameState.IN_PROGRESS) {
           console.log('Game cannot be resumed. Creating new game..')
           await createNewGame()
+          error.value = null
           return
         }
 
@@ -34,6 +36,7 @@ export const useGameStore = defineStore('game', () => {
       } catch (e) {
         console.log('Saved game not found, creating new one')
         await createNewGame()
+        error.value = null
       }
     } catch (e) {
       error.value = e as Error
