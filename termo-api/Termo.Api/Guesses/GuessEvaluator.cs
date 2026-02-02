@@ -20,7 +20,7 @@ public class GuessEvaluator : IGuessEvaluator
         for (var i = 0; i < guess.Length; i++)
         {
             char t = target.Value[i];
-            if (!remaining.TryAdd(key: t, value: 1))
+            if (!remaining.TryAdd(t, 1))
                 remaining[t]++;
         }
 
@@ -50,7 +50,7 @@ public class GuessEvaluator : IGuessEvaluator
             char g = guess.Value[i];
             char t = target.Value[i];
 
-            if (remaining.TryGetValue(key: g, value: out int count) && count > 0)
+            if (remaining.TryGetValue(g, out int count) && count > 0)
             {
                 evaluations[i] = new LetterEvaluation(
                     Letter: g,

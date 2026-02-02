@@ -12,8 +12,8 @@ if (builder.Environment.IsDevelopment())
     builder.Services.AddCors(opts =>
     {
         opts.AddPolicy(
-            name: "DevPolicy",
-            configurePolicy: policy =>
+            "DevPolicy",
+            policy =>
             {
                 policy
                     .WithOrigins(frontendUrl)

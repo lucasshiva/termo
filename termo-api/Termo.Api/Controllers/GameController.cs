@@ -27,13 +27,13 @@ public class GamesController(
     public async Task<IActionResult> CreateGame()
     {
         GameDto game = await createGameUseCase.ExecuteAsync();
-        return Created(uri: $"/games/{game.Id}", value: game);
+        return Created($"/games/{game.Id}", game);
     }
 
     [HttpPost("{gameId:guid}/guess")]
     public async Task<IActionResult> SubmitGuess(Guid gameId, [FromBody] SubmitGuessRequest request)
     {
-        GameDto game = await submitGuessUseCase.ExecuteAsync(gameId: gameId, guess: request.Guess);
+        GameDto game = await submitGuessUseCase.ExecuteAsync(gameId, request.Guess);
         return Ok(game);
     }
 }

@@ -30,8 +30,8 @@ public class WordLoader : IWordLoader
         try
         {
             WordsModel? model = JsonSerializer.Deserialize<WordsModel>(
-                json: json,
-                options: new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
+                json,
+                new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
             );
 
             if (model is null)
@@ -56,19 +56,16 @@ public class WordLoader : IWordLoader
         }
         catch (ArgumentNullException e)
         {
-            throw new InvalidDataException(
-                message: "Failed to load words from file: ",
-                innerException: e
-            );
+            throw new InvalidDataException("Failed to load words from file: ", e);
         }
     }
 
     private static string RemoveAccents(string text)
     {
-        var normalized = text.Normalize(NormalizationForm.FormD);
+        string normalized = text.Normalize(NormalizationForm.FormD);
         var sb = new StringBuilder();
 
-        foreach (var c in normalized)
+        foreach (char c in normalized)
         {
             if (CharUnicodeInfo.GetUnicodeCategory(c) != UnicodeCategory.NonSpacingMark)
                 sb.Append(c);

@@ -20,7 +20,7 @@ public class InMemoryGameRepository : IGameRepository
 
     public Task AddAsync(GameDto game)
     {
-        _games.AddOrUpdate(key: game.Id, addValue: game, updateValueFactory: (_, _) => game);
+        _games.AddOrUpdate(game.Id, game, (_, _) => game);
         return Task.FromResult(game);
     }
 }
